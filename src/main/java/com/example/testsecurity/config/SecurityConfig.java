@@ -21,7 +21,7 @@ public class SecurityConfig {
 
 		http
 			.authorizeHttpRequests((auth) -> auth	// 상단부터 동작되기 때문에 경로 작성 순서에 유의
-				.requestMatchers("/", "/login").permitAll()	// 루트 경로 또는 /login 경로에 대해서 특정한 작업을 진행하고 싶을 때 사용
+				.requestMatchers("/", "/login", "/loginProc", "/join", "/joinProc").permitAll()	// 루트 경로 또는 /login 경로에 대해서 특정한 작업을 진행하고 싶을 때 사용
 				.requestMatchers("/admin").hasRole("ADMIN")
 				.requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")	// **은 와일드카드
 				.anyRequest().authenticated()	// 위에서 처리하지 못한 나머지 경로들
