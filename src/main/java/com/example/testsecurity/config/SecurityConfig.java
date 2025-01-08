@@ -21,6 +21,16 @@ public class SecurityConfig {
 				.anyRequest().authenticated()	// 위에서 처리하지 못한 나머지 경로들
 			);
 
+		http
+			.formLogin((auth) -> auth.loginPage("/login")	// 오류 페이지가 아닌 login 페이지로 리다이렉션함
+				.loginProcessingUrl("/loginProc")	// html의 form 태그와 같은 경로 설정, 시큐리티가 데이터를 받아서 처리함
+				.permitAll()
+			);
+
+		// csrf : 사이트 위변조 방지 설정
+		http
+			.csrf((auth) -> auth.disable());
+
 		return http.build();
 	}
 }
