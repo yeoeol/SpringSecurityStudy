@@ -34,8 +34,8 @@ public class SecurityConfig {
 			);
 
 		// csrf : 사이트 위변조 방지 설정
-		http
-			.csrf((auth) -> auth.disable());
+		// http
+		// 	.csrf((auth) -> auth.disable());
 
 		// 다중 로그인 설정
 		http
