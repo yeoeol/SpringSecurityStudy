@@ -34,19 +34,9 @@ public class SecurityConfig {
 			);
 
 		// csrf : 사이트 위변조 방지 설정
-		// http
-		// 	.csrf((auth) -> auth.disable());
-
-		// 다중 로그인 설정
 		http
-			.sessionManagement((auth) -> auth
-				.maximumSessions(1)	// 하나의 아이디에 대한 다중 로그인 허용 개수
-				.maxSessionsPreventsLogin(true));	// 다중 로그인 개수를 초과하였을 경우 처리 방법, - true : 초과시 새로운 로그인 차단 ; - false : 초과시 기존 세션 하나 삭제
+			.csrf((auth) -> auth.disable());
 
-		// 세션 고정 보호
-		http
-			.sessionManagement((auth) -> auth
-				.sessionFixation().changeSessionId());
 		return http.build();
 	}
 }
