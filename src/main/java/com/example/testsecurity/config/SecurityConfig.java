@@ -25,11 +25,10 @@ public class SecurityConfig {
 
 	@Bean
 	public RoleHierarchy roleHierarchy() {
-		RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
-
-		hierarchy.setHierarchy("ROLE_C > ROLE_B\n" +
-			"ROLE_B > ROLE_A");
-		return hierarchy;
+		return RoleHierarchyImpl.withDefaultRolePrefix()
+			.role("C").implies("B")
+			.role("B").implies("A")
+			.build();
 	}
 
 	@Bean
@@ -63,7 +62,7 @@ public class SecurityConfig {
 		UserDetails user1 = User.builder()
 			.username("user1")
 			.password(bCryptPasswordEncoder().encode("1234"))
-			.roles("C")
+			.roles("A")
 			.build();
 
 		UserDetails user2 = User.builder()
