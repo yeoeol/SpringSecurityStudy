@@ -2,9 +2,14 @@ package com.example.testsecurity.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -28,15 +33,30 @@ public class SecurityConfig {
 			);
 
 		http
-			.formLogin((auth) -> auth.loginPage("/login")	// 오류 페이지가 아닌 login 페이지로 리다이렉션함
-				.loginProcessingUrl("/loginProc")	// html의 form 태그와 같은 경로 설정, 시큐리티가 데이터를 받아서 처리함
-				.permitAll()
-			);
+			.httpBasic(Customizer.withDefaults());
 
 		// csrf : 사이트 위변조 방지 설정
 		http
 			.csrf((auth) -> auth.disable());
 
 		return http.build();
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+
+		UserDetails user1 = User.builder()
+			.username("user1")
+			.password(bCryptPasswordEncoder().encode("1234"))
+			.roles("ADMIN")
+			.build();
+
+		UserDetails user2 = User.builder()
+			.username("user2")
+			.password(bCryptPasswordEncoder().encode("1234"))
+			.roles("USER")
+			.build();
+
+		return new InMemoryUserDetailsManager(user1, user2);
 	}
 }
