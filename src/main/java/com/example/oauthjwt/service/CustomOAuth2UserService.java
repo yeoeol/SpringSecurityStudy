@@ -11,9 +11,17 @@ import com.example.oauthjwt.dto.GoogleResponse;
 import com.example.oauthjwt.dto.NaverResponse;
 import com.example.oauthjwt.dto.OAuth2Response;
 import com.example.oauthjwt.dto.UserDTO;
+import com.example.oauthjwt.entity.UserEntity;
+import com.example.oauthjwt.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+	private final UserRepository userRepository;
+
 	@Override
 	public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 		OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -32,12 +40,35 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		}
 		//리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듦
 		String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+		UserEntity existData = userRepository.findByUsername(username);
+		if (existData == null) {
+			UserEntity userEntity = new UserEntity();
+			userEntity.setUsername(username);
+			userEntity.setEmail(oAuth2Response.getEmail());
+			userEntity.setName(oAuth2Response.getName());
+			userEntity.setRole("ROLE_USER");
 
-		UserDTO userDTO = new UserDTO();
-		userDTO.setUsername(username);
-		userDTO.setName(oAuth2Response.getName());
-		userDTO.setRole("ROLE_USER");
+			userRepository.save(userEntity);
 
-		return new CustomOAuth2User(userDTO);
+			UserDTO userDTO = new UserDTO();
+			userDTO.setUsername(username);
+			userDTO.setName(oAuth2Response.getName());
+			userDTO.setRole("ROLE_USER");
+
+			return new CustomOAuth2User(userDTO);
+		}
+		else {
+			existData.setEmail(oAuth2Response.getEmail());
+			existData.setName(oAuth2Response.getName());
+
+			userRepository.save(existData);
+
+			UserDTO userDTO = new UserDTO();
+			userDTO.setUsername(existData.getUsername());
+			userDTO.setName(oAuth2Response.getName());
+			userDTO.setRole(existData.getRole());
+
+			return new CustomOAuth2User(userDTO);
+		}
 	}
 }
