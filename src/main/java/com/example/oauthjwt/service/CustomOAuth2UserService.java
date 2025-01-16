@@ -6,9 +6,11 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import com.example.oauthjwt.dto.CustomOAuth2User;
 import com.example.oauthjwt.dto.GoogleResponse;
 import com.example.oauthjwt.dto.NaverResponse;
 import com.example.oauthjwt.dto.OAuth2Response;
+import com.example.oauthjwt.dto.UserDTO;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -28,6 +30,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 		else {
 			return null;
 		}
-		// 로그인 완료 후 로직, 추후 작성
+		//리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듦
+		String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
+
+		UserDTO userDTO = new UserDTO();
+		userDTO.setUsername(username);
+		userDTO.setName(oAuth2Response.getName());
+		userDTO.setRole("ROLE_USER");
+
+		return new CustomOAuth2User(userDTO);
 	}
 }
