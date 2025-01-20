@@ -1,5 +1,5 @@
 # 개발자 유미 유튜브 강의
-## [스프링 시큐리티 JWT]
+## [Spring OAuth2 클라이언트 JWT]
 https://www.youtube.com/playlist?list=PLJkjrxxiBSFALedMwcqDw_BPaJ3qqbWeB
 
 해당 재생목록 강의 시청
